@@ -3,7 +3,7 @@
     //Singleton lets you ensure that a class has only one instance
     public sealed class Singleton
     {
-        private static readonly Singleton _instance = new Singleton();
+        private static readonly Singleton _instance = new();
 
         private Singleton()
         { }
