@@ -1,5 +1,4 @@
 ﻿using DesignPattern.Behavioural;
-using System;
 
 namespace DesignPattern
 {
@@ -7,8 +6,8 @@ namespace DesignPattern
     {
         static void Main(string[] args)
         {
-            var client = new ClientIterator();
-            client.Display();
+            var client = new ObserverClient();
+            client.UpdatePublisher();
         }
     }
 }
