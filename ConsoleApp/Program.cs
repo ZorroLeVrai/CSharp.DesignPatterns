@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DesignPattern.Behavioural;
+using System;
 
 namespace DesignPattern
 {
@@ -6,7 +7,8 @@ namespace DesignPattern
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var client = new ClientIterator();
+            client.Display();
         }
     }
 }
