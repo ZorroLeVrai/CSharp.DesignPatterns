@@ -1,4 +1,5 @@
 ﻿using DesignPattern.Behavioural;
+using DesignPattern.Creational;
 
 namespace DesignPattern
 {
@@ -6,8 +7,8 @@ namespace DesignPattern
     {
         static void Main(string[] args)
         {
-            var client = new ChainOfResponsibilityClient();
-            client.UseChainResponsability();
+            var client = new BuilderClient();
+            client.UseBuilder();
         }
     }
 }

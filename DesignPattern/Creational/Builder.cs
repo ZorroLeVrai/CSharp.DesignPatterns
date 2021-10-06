@@ -81,7 +81,7 @@ namespace DesignPattern.Creational
         public Director(IBuilder builder)
             => _builder = builder;
 
-        public IBProduct Make(bool isAlpha)
+        public IBProduct BuildProduct(bool isAlpha)
         {
             _builder.Reset();
             if (isAlpha)
@@ -95,6 +95,15 @@ namespace DesignPattern.Creational
             }
 
             return _builder.Product;
+        }
+    }
+
+    public class BuilderClient
+    {
+        public void UseBuilder()
+        {
+            var director = new Director(new BuilderBeta());
+            var product = director.BuildProduct(true);
         }
     }
 }
