@@ -6,8 +6,8 @@ namespace DesignPattern
     {
         static void Main(string[] args)
         {
-            var client = new ObserverClient();
-            client.UpdatePublisher();
+            var client = new ChainOfResponsibilityClient();
+            client.UseChainResponsability();
         }
     }
 }
