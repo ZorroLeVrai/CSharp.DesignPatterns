@@ -54,4 +54,14 @@
         public string GetName()
             => "Beta";
     }
+
+    public class FactoryMethodClient
+    {
+        public void UseFactoryMethod()
+        {
+            var factory = new FactoryMethodSuperAlpha();
+            var model = factory.CreateModel();
+            model.GetName();
+        }
+    }
 }

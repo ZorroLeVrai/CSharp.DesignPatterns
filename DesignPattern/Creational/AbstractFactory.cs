@@ -11,16 +11,20 @@
 
     public class SmallFactory : IAbstractFactory
     {
-        IAFProductA IAbstractFactory.CreateProductA() => new AFSmallProductA();
+        public IAFProductA CreateProductA()
+            => new AFSmallProductA();
 
-        IAFProductB IAbstractFactory.CreateProductB() => new AFSmallProductB();
+        public IAFProductB CreateProductB()
+            => new AFSmallProductB();
     }
 
     public class LargeFactory : IAbstractFactory
     {
-        IAFProductA IAbstractFactory.CreateProductA() => new AFLargeProductA();
+        public IAFProductA CreateProductA()
+            => new AFLargeProductA();
 
-        IAFProductB IAbstractFactory.CreateProductB() => new AFLargeProductB();
+        public IAFProductB CreateProductB()
+            => new AFLargeProductB();
     }
 
     public interface IAFProductA
@@ -40,4 +44,14 @@
 
     public class AFLargeProductB : IAFProductB
     { }
+
+    public class AbstractFactoryClient
+    {
+        public void UseAbstractFactory()
+        {
+            var factory = new LargeFactory();
+            IAFProductA productA = factory.CreateProductA();
+            IAFProductB productB = factory.CreateProductB();
+        }
+    }
 }
