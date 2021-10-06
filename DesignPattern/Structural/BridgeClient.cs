@@ -51,7 +51,7 @@ namespace DesignPattern.Structural
         public override string Name => "Blue";
     }
 
-    public class Bridge
+    public class BridgeClient
     {
         private readonly Shape[] _shapes = {
             new Circle(new Blue()),

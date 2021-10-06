@@ -36,4 +36,13 @@
             _alpha.Dessiner();
         }
     }
+
+    public class AdapterClient
+    {
+        public void UseAdapter()
+        {
+            IAlpha adapter = new AdapterAlpha(new AAlpha());
+            adapter.Draw();
+        }
+    }
 }

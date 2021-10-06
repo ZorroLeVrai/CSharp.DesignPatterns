@@ -40,4 +40,13 @@ namespace DesignPattern.Structural
             Console.WriteLine("After execution");
         }
     }
+
+    public class ProxyClient
+    {
+        public void UseProxy()
+        {
+            var proxy = new ProxyService(new RealService(), true);
+            proxy.Execute();
+        }
+    }
 }

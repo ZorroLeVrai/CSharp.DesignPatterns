@@ -76,7 +76,7 @@ namespace DesignPattern.Creational
 
     public class Director
     {
-        private IBuilder _builder;
+        private readonly IBuilder _builder;
 
         public Director(IBuilder builder)
             => _builder = builder;

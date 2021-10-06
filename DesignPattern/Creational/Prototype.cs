@@ -50,4 +50,14 @@
     }
 
     public record ProtoProduct(string FieldA, string FieldB, string FieldC, string FieldD);
+
+    public class PrototypeClient
+    {
+        public void UsePrototype()
+        {
+            var product = new ProtoProduct("A", "B", "C", "D");
+            var prototype = new SubPrototypeAlpha(product);
+            var prototype2 = prototype.Clone();
+        }
+    }
 }

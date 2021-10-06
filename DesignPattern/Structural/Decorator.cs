@@ -42,4 +42,13 @@
             System.Console.WriteLine("Post-Information");
         }
     }
+
+    public class DecoratorClient
+    {
+        public void UseDecorator()
+        {
+            var decorator = new PreInfoDecorator(new PostInfoDecorator(new DecoProduct()));
+            decorator.DisplayInfo();
+        }
+    }
 }

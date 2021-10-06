@@ -4,7 +4,7 @@ namespace DesignPattern.Behavioural
 {
     //Iterator lets you traverse elements of a collection without exposing its underlying representation (list, stack, tree, etc.).
 
-    public interface Iterator
+    public interface IIterator
     {
         string GetFirst();
 
@@ -13,21 +13,21 @@ namespace DesignPattern.Behavioural
         bool HasMore();
     }
 
-    public interface IterableCollection
+    public interface IIterableCollection
     {
-        Iterator CreateIterator();
+        IIterator CreateIterator();
 
         string this[int index] { get; }
 
         int Count { get; }
     }
 
-    public class ConcreteIterator : Iterator
+    public class ConcreteIterator : IIterator
     {
-        private readonly IterableCollection _collection;
+        private readonly IIterableCollection _collection;
         public int _count;
 
-        public ConcreteIterator(IterableCollection collection)
+        public ConcreteIterator(IIterableCollection collection)
         {
             _collection = collection;
             _count = 0;
@@ -41,7 +41,11 @@ namespace DesignPattern.Behavioural
 
         public string GetNext()
         {
-            return _collection[_count++];
+            ++_count;
+            if (HasMore())
+                return _collection[_count];
+
+            return null;
         }
 
         public bool HasMore()
@@ -50,9 +54,9 @@ namespace DesignPattern.Behavioural
         }
     }
 
-    public class ConcreteCollection : IterableCollection
+    public class ConcreteCollection : IIterableCollection
     {
-        private List<string> _data = new List<string>();
+        private readonly List<string> _data = new();
 
         public string this[int index] {
             get => _data[index];
@@ -63,7 +67,7 @@ namespace DesignPattern.Behavioural
             get => _data.Count;
         }
 
-        public Iterator CreateIterator()
+        public IIterator CreateIterator()
         {
             return new ConcreteIterator(this);
         }
@@ -74,11 +78,11 @@ namespace DesignPattern.Behavioural
         }
     }
 
-    public class ClientIterator
+    public class IteratorClient
     {
-        private readonly IterableCollection _collection;
+        private readonly IIterableCollection _collection;
 
-        public ClientIterator()
+        public IteratorClient()
         {
             var collection = new ConcreteCollection();
             collection.AddData("Adam");
@@ -89,9 +93,9 @@ namespace DesignPattern.Behavioural
         public void Display()
         {
             var iterator = _collection.CreateIterator();
-            while (iterator.HasMore())
+            for (var item = iterator.GetFirst(); iterator.HasMore(); item = iterator.GetNext())
             {
-                System.Console.WriteLine(iterator.GetNext());
+                System.Console.WriteLine(item);
             }
         }
     }

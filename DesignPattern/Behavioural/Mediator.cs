@@ -43,7 +43,7 @@ namespace DesignPattern.Behavioural
 
     public class Mediator
     {
-        private List<IActor> _actors = new List<IActor>();
+        private readonly List<IActor> _actors = new();
 
         public void Register(IActor actor)
         {
@@ -60,7 +60,7 @@ namespace DesignPattern.Behavioural
 
     public class MediatorClient
     {
-        private Mediator mediator = new Mediator();
+        private readonly Mediator mediator = new();
 
         public void UseMediator()
         {

@@ -27,7 +27,7 @@ namespace DesignPattern.Behavioural
 
     public class Publisher
     {
-        private Dictionary<string, ISubscriber> _subscribersDico = new Dictionary<string, ISubscriber>();
+        private readonly Dictionary<string, ISubscriber> _subscribersDico = new();
 
         public void Subscribe(ISubscriber subscriber)
         {
@@ -57,7 +57,7 @@ namespace DesignPattern.Behavioural
 
     public class ObserverClient
     {
-        private readonly Publisher _publisher = new Publisher();
+        private readonly Publisher _publisher = new();
 
         public ObserverClient()
         {

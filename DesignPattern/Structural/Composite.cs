@@ -33,11 +33,11 @@ namespace DesignPattern.Structural
     }
 
 
-    class CompositeExample
+    public class CompositeClient
     {
         private readonly IComponent _component;
 
-        public CompositeExample()
+        public CompositeClient()
         {
             var composite = new CompositeComponent();
             composite.Add(new LeafComponent("Adam"));

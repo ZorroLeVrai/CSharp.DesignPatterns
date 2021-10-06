@@ -5,7 +5,7 @@ namespace DesignPattern.Structural
     public class DownloadVideo
     {
         public VideoFile GetFile(string url)
-            => new VideoFile();
+            => new();
     }
 
     public enum VideoType
@@ -37,7 +37,7 @@ namespace DesignPattern.Structural
     /// </summary>
     public class Facade
     {
-        private DownloadVideo _videoDownloader;
+        private readonly DownloadVideo _videoDownloader;
         private VideoFile _video;
 
 
@@ -64,6 +64,16 @@ namespace DesignPattern.Structural
                 default:
                     throw new Exception("Unknown type");
             }
+        }
+    }
+
+    public class FacadeClient
+    {
+        public void UseFacade()
+        {
+            var facade = new Facade();
+            facade.GetVideo("http://video.com");
+            facade.Display();
         }
     }
 }

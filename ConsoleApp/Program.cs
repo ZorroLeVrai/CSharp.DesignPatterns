@@ -1,5 +1,6 @@
 ﻿using DesignPattern.Behavioural;
 using DesignPattern.Creational;
+using DesignPattern.Structural;
 
 namespace DesignPattern
 {
@@ -7,8 +8,8 @@ namespace DesignPattern
     {
         static void Main(string[] args)
         {
-            var client = new BuilderClient();
-            client.UseBuilder();
+            var client = new StrategyClient();
+            client.UseStrategyPattern();
         }
     }
 }

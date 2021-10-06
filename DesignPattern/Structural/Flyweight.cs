@@ -7,7 +7,7 @@ namespace DesignPattern.Structural
 
     public record TreeType(string Name)
     {
-        private char[] _sprite = new char[1024];
+        private readonly char[] _sprite = new char[1024];
 
         public void Display()
         {
@@ -17,7 +17,7 @@ namespace DesignPattern.Structural
 
     public class TreeTypeCache
     {
-        private Dictionary<string, TreeType> _treeDico = new Dictionary<string, TreeType>();
+        private readonly Dictionary<string, TreeType> _treeDico = new();
 
         public TreeType GetTreeType(string name)
         {
@@ -32,8 +32,8 @@ namespace DesignPattern.Structural
 
     public class Forest
     {
-        private List<Tree> _trees = new List<Tree>();
-        private TreeTypeCache _treeTypeCache = new TreeTypeCache();
+        private readonly List<Tree> _trees = new();
+        private readonly TreeTypeCache _treeTypeCache = new();
 
         public void AddTree(double x, double y, string typeName)
         {
@@ -71,11 +71,11 @@ namespace DesignPattern.Structural
         }
     }
 
-    public class FlyweightExample
+    public class FlyweightClient
     {
         private readonly Forest _forest;
 
-        public FlyweightExample()
+        public FlyweightClient()
         {
             _forest = new Forest();
             _forest.AddTree(1, 1, "Sapin");
