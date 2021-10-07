@@ -1,7 +1,4 @@
-﻿using DesignPattern.Behavioural;
-using DesignPattern.Creational;
-using DesignPattern.Others;
-using DesignPattern.Structural;
+﻿using DesignPattern.Others.NonNull;
 
 namespace DesignPattern
 {
@@ -9,8 +6,8 @@ namespace DesignPattern
     {
         static void Main(string[] args)
         {
-            var client = new EnumClassClient();
-            client.UseEmployee();
+            var client = new NonNullStructClient();
+            client.UseNonNull();
         }
     }
 }

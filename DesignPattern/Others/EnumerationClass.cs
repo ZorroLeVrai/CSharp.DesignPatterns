@@ -47,17 +47,17 @@ namespace DesignPattern.Others
 
         public static T FromValue<T>(int value) where T : Enumeration, new()
         {
-            var matchingItem = parse<T, int>(value, "value", item => item.Value == value);
+            var matchingItem = Parse<T, int>(value, "value", item => item.Value == value);
             return matchingItem;
         }
 
         public static T FromDisplayName<T>(string displayName) where T : Enumeration, new()
         {
-            var matchingItem = parse<T, string>(displayName, "display name", item => item.DisplayName == displayName);
+            var matchingItem = Parse<T, string>(displayName, "display name", item => item.DisplayName == displayName);
             return matchingItem;
         }
 
-        private static T parse<T, K>(K value, string description, Func<T, bool> predicate) where T : Enumeration, new()
+        private static T Parse<T, K>(K value, string description, Func<T, bool> predicate) where T : Enumeration, new()
         {
             var matchingItem = GetAll<T>().FirstOrDefault(predicate);
 
@@ -79,8 +79,8 @@ namespace DesignPattern.Others
 
     public record EmployeeType : Enumeration
     {
-        public static EmployeeType Assistant = new EmployeeType(0, "Assistant", new AssistantEmployeeHandler());
-        public static EmployeeType LeadTeacher = new EmployeeType(1, "Lead Teacher", new LeadTeacherEmployeeHandler());
+        public static readonly EmployeeType Assistant = new EmployeeType(0, "Assistant", new AssistantEmployeeHandler());
+        public static readonly EmployeeType LeadTeacher = new EmployeeType(1, "Lead Teacher", new LeadTeacherEmployeeHandler());
 
         public IEmployeeHandler Do { get; }
 
