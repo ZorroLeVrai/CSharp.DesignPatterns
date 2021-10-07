@@ -1,4 +1,5 @@
-﻿using DesignPattern.Others.NonNull;
+﻿using DesignPattern.Others.Encapsulation;
+using DesignPattern.Others.NonNull;
 
 namespace DesignPattern
 {
@@ -6,8 +7,8 @@ namespace DesignPattern
     {
         static void Main(string[] args)
         {
-            var client = new NonNullStructClient();
-            client.UseNonNull();
+            var client = new InterfaceRestrictorClient();
+            client.Exec();
         }
     }
 }
