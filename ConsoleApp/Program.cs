@@ -1,4 +1,5 @@
-﻿using DesignPattern.Others.Encapsulation;
+﻿using DesignPattern.Others;
+using DesignPattern.Others.Encapsulation;
 using DesignPattern.Others.NonNull;
 
 namespace DesignPattern
@@ -7,8 +8,8 @@ namespace DesignPattern
     {
         static void Main(string[] args)
         {
-            var client = new InterfaceRestrictorClient();
-            client.Exec();
+            var client = new CartClient();
+            client.UseCart();
         }
     }
 }
