@@ -4,6 +4,12 @@ using System.Linq;
 
 namespace DesignPattern.Others
 {
+    /// <summary>
+    /// If a class can be simulated using a function, we could say that
+    /// a class is a function (where the constructor returns all public members and functions)
+    /// as a functions is an object
+    /// we could also say that class are objects
+    /// </summary>
     public class FunctionData
     {
         /// <summary>
