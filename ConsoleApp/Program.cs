@@ -6,7 +6,7 @@ namespace DesignPattern
     {
         static void Main(string[] args)
         {
-            var client = new UnionClient();
+            var client = new UseFunctionData();
             client.Exec();
         }
     }
