@@ -1,101 +1,111 @@
 ﻿using System.Collections.Generic;
+using Xunit;
 
-namespace DesignPattern.Behavioural
+namespace DesignPattern.Behavioural;
+
+/// <summary>
+/// Iterator lets you traverse elements of a collection without exposing its underlying representation (list, stack, tree, etc.).
+/// </summary>
+public interface IIterator
 {
-    //Iterator lets you traverse elements of a collection without exposing its underlying representation (list, stack, tree, etc.).
+    string GetFirst();
 
-    public interface IIterator
+    string GetNext();
+
+    bool HasMore();
+}
+
+public interface IIterableCollection
+{
+    IIterator CreateIterator();
+
+    string this[int index] { get; }
+
+    int Count { get; }
+}
+
+public class ConcreteIterator : IIterator
+{
+    private readonly IIterableCollection _collection;
+    public int _count;
+
+    public ConcreteIterator(IIterableCollection collection)
     {
-        string GetFirst();
-
-        string GetNext();
-
-        bool HasMore();
+        _collection = collection;
+        _count = 0;
     }
 
-    public interface IIterableCollection
+    public string GetFirst()
     {
-        IIterator CreateIterator();
-
-        string this[int index] { get; }
-
-        int Count { get; }
+        _count = 0;
+        return _collection[_count];
     }
 
-    public class ConcreteIterator : IIterator
+    public string GetNext()
     {
-        private readonly IIterableCollection _collection;
-        public int _count;
-
-        public ConcreteIterator(IIterableCollection collection)
-        {
-            _collection = collection;
-            _count = 0;
-        }
-
-        public string GetFirst()
-        {
-            _count = 0;
+        ++_count;
+        if (HasMore())
             return _collection[_count];
-        }
 
-        public string GetNext()
-        {
-            ++_count;
-            if (HasMore())
-                return _collection[_count];
-
-            return null;
-        }
-
-        public bool HasMore()
-        {
-            return _count < _collection.Count;
-        }
+        return null;
     }
 
-    public class ConcreteCollection : IIterableCollection
+    public bool HasMore()
     {
-        private readonly List<string> _data = new();
+        return _count < _collection.Count;
+    }
+}
 
-        public string this[int index] {
-            get => _data[index];
-        }
+public class ConcreteCollection : IIterableCollection
+{
+    private readonly List<string> _data = new();
 
-        public int Count
-        {
-            get => _data.Count;
-        }
-
-        public IIterator CreateIterator()
-        {
-            return new ConcreteIterator(this);
-        }
-
-        public void AddData(string data)
-        {
-            _data.Add(data);
-        }
+    public string this[int index] {
+        get => _data[index];
     }
 
-    public class IteratorClient
+    public int Count
     {
-        private readonly IIterableCollection _collection;
+        get => _data.Count;
+    }
 
-        public IteratorClient()
-        {
-            var collection = new ConcreteCollection();
-            collection.AddData("Adam");
-            collection.AddData("Lise");
-            _collection = collection;
-        }
+    public IIterator CreateIterator()
+    {
+        return new ConcreteIterator(this);
+    }
 
-        public void Display()
+    public void AddData(string data)
+    {
+        _data.Add(data);
+    }
+}
+
+public class IteratorClient : AbstractRunner
+{
+    private readonly IIterableCollection _collection;
+
+    public IteratorClient()
+    {
+        var collection = new ConcreteCollection();
+        collection.AddData("Adam");
+        collection.AddData("Lise");
+        _collection = collection;
+    }
+
+    public override void Run()
+    {
+        var iterator = _collection.CreateIterator();
+        var index = 0;
+        for (var item = iterator.GetFirst(); iterator.HasMore(); item = iterator.GetNext())
         {
-            var iterator = _collection.CreateIterator();
-            for (var item = iterator.GetFirst(); iterator.HasMore(); item = iterator.GetNext())
+            switch (index++)
             {
-                System.Console.WriteLine(item);
+                case 0:
+                    Assert.Equal("Adam", item);
+                    break;
+                case 1:
+                    Assert.Equal("Lise", item);
+                    break;
             }
         }
     }

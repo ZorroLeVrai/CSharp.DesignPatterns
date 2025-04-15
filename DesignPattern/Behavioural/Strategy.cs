@@ -1,47 +1,50 @@
-﻿using System;
+﻿using Xunit;
 
-namespace DesignPattern.Behavioural
+namespace DesignPattern.Behavioural;
+
+/// <summary>
+/// Strategy lets you define a family of algorithms, put each of them into a separate class,
+/// and make their objects interchangeable.
+/// </summary>
+public interface IStrategy
 {
-    //Strategy lets you define a family of algorithms, put each of them into a separate class, and make their objects interchangeable.
+    string Exectute();
+}
 
-    public interface IStrategy
+public class ConcreteStrategyAlpha : IStrategy
+{
+    public string Exectute()
+        => "Execute Strategy A";
+}
+
+public class ConcreteStrategyBeta : IStrategy
+{
+    public string Exectute()
+        => "Execute Strategy B";
+}
+
+public class StrategyContext
+{
+    public IStrategy Strategy { get; set; }
+
+    public StrategyContext(IStrategy strategy)
     {
-        void Exectute();
+        Strategy = strategy;
     }
 
-    public class ConcreteStrategyAlpha : IStrategy
+    public string DoSomething()
+        => Strategy.Exectute();
+}
+
+public class StrategyClient : AbstractRunner
+{
+    public override void Run()
     {
-        public void Exectute()
-            => Console.WriteLine("Execute Strategy A");
-    }
-
-    public class ConcreteStrategyBeta : IStrategy
-    {
-        public void Exectute()
-            => Console.WriteLine("Execute Strategy B");
-    }
-
-    public class StrategyContext
-    {
-        public IStrategy Strategy { get; set; }
-
-        public StrategyContext(IStrategy strategy)
-        {
-            Strategy = strategy;
-        }
-
-        public void DoSomething()
-            => Strategy.Exectute();
-    }
-
-    public class StrategyClient
-    {
-        public void UseStrategyPattern()
-        {
-            var context = new StrategyContext(new ConcreteStrategyAlpha());
-            context.DoSomething();
-            context = new StrategyContext(new ConcreteStrategyBeta());
-            context.DoSomething();
-        }
+        var context = new StrategyContext(new ConcreteStrategyAlpha());
+        var actionLog = context.DoSomething();
+        Assert.Equal("Execute Strategy A", actionLog);
+        context = new StrategyContext(new ConcreteStrategyBeta());
+        actionLog = context.DoSomething();
+        Assert.Equal("Execute Strategy B", actionLog);
     }
 }
