@@ -1,48 +1,42 @@
-﻿namespace DesignPattern.Structural
+﻿using Xunit;
+
+namespace DesignPattern.Structural;
+
+/// <summary>
+/// Adapter allows objects with incompatible interfaces to collaborate
+/// </summary>
+public interface IAlpha
 {
-    //Adapter allows objects with incompatible interfaces to collaborate
+    string Draw();
+}
 
-    /// <summary>
-    /// Interface to implement
-    /// </summary>
-    public interface IAlpha
+/// <summary>
+/// External library to adapt
+/// </summary>
+public class AAlpha
+{
+    public string Dessiner() => "dessiner";
+}
+
+/// <summary>
+/// Adapter
+/// </summary>
+public class AdapterAlpha : IAlpha
+{
+    private readonly AAlpha _alpha;
+
+    public AdapterAlpha(AAlpha alpha)
+        => _alpha = alpha;
+
+    public string Draw() => _alpha.Dessiner();
+}
+
+public class AdapterClient : AbstractRunner
+{
+    public override void Run()
     {
-        void Draw();
-    }
-
-    /// <summary>
-    /// External library to adapt
-    /// </summary>
-    public class AAlpha
-    {
-        public void Dessiner()
-        {
-            System.Console.WriteLine("Dessiner");
-        }
-    }
-
-    /// <summary>
-    /// Adapter
-    /// </summary>
-    public class AdapterAlpha : IAlpha
-    {
-        private readonly AAlpha _alpha;
-
-        public AdapterAlpha(AAlpha alpha)
-            => _alpha = alpha;
-
-        public void Draw()
-        {
-            _alpha.Dessiner();
-        }
-    }
-
-    public class AdapterClient
-    {
-        public void UseAdapter()
-        {
-            IAlpha adapter = new AdapterAlpha(new AAlpha());
-            adapter.Draw();
-        }
+        IAlpha adapter = new AdapterAlpha(new AAlpha());
+        var result = adapter.Draw();
+        Assert.Equal("dessiner", result);
     }
 }

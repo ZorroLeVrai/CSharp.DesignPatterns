@@ -10,6 +10,7 @@ class Program
     {
         Assembly.Load("DesignPattern").GetTypes()
             .Where(t => t.IsClass && t.BaseType == typeof(AbstractRunner))
+            .OrderBy(t => t.Name)
             .ToList()
             .ForEach(t =>
             {

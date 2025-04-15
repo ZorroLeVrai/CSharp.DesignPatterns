@@ -1,53 +1,63 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Xunit;
 
-namespace DesignPattern.Structural
+namespace DesignPattern.Structural;
+
+/// <summary>
+/// Composite lets you compose objects into tree structures and then work with these structures
+/// as if they were individual objects.
+/// </summary>
+public interface IComponent
 {
-    //Composite lets you compose objects into tree structures and then work with these structures as if they were individual objects.
+    IReadOnlyList<string> Execute();
+}
 
-    public interface IComponent
+public record LeafComponent(string Name) : IComponent
+{
+    public IReadOnlyList<string> Execute() => new[] { $"{Name} executed" };
+}
+
+public record CompositeComponent : IComponent
+{
+    private readonly List<IComponent> _children = new();
+
+    public void Add(IComponent child)
     {
-        void Execute();
+        _children.Add(child);
     }
 
-    public record LeafComponent(string Name) : IComponent
+    public IReadOnlyList<string> Execute()
     {
-        public void Execute()
-            => Console.WriteLine($"{Name} executed");
-    }
+        var results = new List<string>();
 
-    public record CompositeComponent : IComponent
-    {
-        private readonly List<IComponent> _children = new();
-
-        public void Add(IComponent child)
+        foreach(var child in _children)
         {
-            _children.Add(child);
+            results.AddRange(child.Execute());
         }
-
-        public void Execute()
-        {
-            foreach (var component in _children)
-                component.Execute();
-        }
+        
+        return results;
     }
+}
 
 
-    public class CompositeClient
+public class CompositeClient : AbstractRunner
+{
+    private readonly IComponent _component;
+
+    public override void Run()
     {
-        private readonly IComponent _component;
+        var composite = new CompositeComponent();
+        composite.Add(new LeafComponent("Bob"));
+        composite.Add(new LeafComponent("John"));
+        composite.Add(new LeafComponent("Jane"));
 
-        public CompositeClient()
-        {
-            var composite = new CompositeComponent();
-            composite.Add(new LeafComponent("Adam"));
-            composite.Add(new LeafComponent("Lise"));
-            composite.Add(new LeafComponent("Amine"));
-
-            _component = composite;
-        }
-
-        public void Execute()
-            => _component.Execute();
+        var results = composite.Execute();
+        Assert.Equal(3, results.Count);
+        Assert.Equal("Bob executed", results[0]);
+        Assert.Equal("John executed", results[1]);
+        Assert.Equal("Jane executed", results[2]);
     }
+
+    public void Execute()
+        => _component.Execute();
 }

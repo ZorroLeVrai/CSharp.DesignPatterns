@@ -1,52 +1,53 @@
 ﻿using System;
+using System.Collections.Generic;
+using Xunit;
 
-namespace DesignPattern.Structural
+namespace DesignPattern.Structural;
+
+/// <summary>
+/// Proxy lets you provide a substitute or placeholder for another object.
+/// A proxy controls access to the original object, allowing you to perform something
+/// either before or after the request gets through to the original object.
+/// </summary>
+public interface IService
 {
-    //Proxy lets you provide a substitute or placeholder for another object.
-    //A proxy controls access to the original object, allowing you to perform something
-    //either before or after the request gets through to the original object.
+    string Execute();
+}
 
-    public interface IService
+public class RealService : IService
+{
+    public string Execute() => "Execute service";
+}
+
+public class ProxyService : IService
+{
+    private readonly IService _service;
+    private readonly bool _isExecute;
+
+    public ProxyService(IService service, bool isExecute)
     {
-        void Execute();
+        _service = service;
+        _isExecute = isExecute;
     }
 
-    public class RealService : IService
+    public string Execute()
     {
-        public void Execute()
-        {
-            Console.WriteLine("Execute service");
-        }
+        var strings = new List<string>() { "Before execution" };
+
+        if (_isExecute)
+            strings.Add(_service.Execute());
+
+        strings.Add("After execution");
+        return string.Join(" | ", strings);
     }
+}
 
-    public class ProxyService : IService
+public class ProxyClient : AbstractRunner
+{
+    public override void Run()
     {
-        private readonly IService _service;
-        private readonly bool _isExecute;
-
-        public ProxyService(IService service, bool isExecute)
-        {
-            _service = service;
-            _isExecute = isExecute;
-        }
-
-        public void Execute()
-        {
-            Console.WriteLine("Before execution");
-
-            if (_isExecute)
-                _service.Execute();
-
-            Console.WriteLine("After execution");
-        }
-    }
-
-    public class ProxyClient
-    {
-        public void UseProxy()
-        {
-            var proxy = new ProxyService(new RealService(), true);
-            proxy.Execute();
-        }
+        var proxy = new ProxyService(new RealService(), true);
+        var resultExecute = proxy.Execute();
+        Assert.Equal("Before execution | Execute service | After execution", resultExecute);
     }
 }
