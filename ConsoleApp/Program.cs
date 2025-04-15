@@ -1,13 +1,20 @@
-﻿using DesignPattern.Others;
+﻿using System;
+using System.Linq;
+using System.Reflection;
 
-namespace DesignPattern
+namespace DesignPattern;
+
+class Program
 {
-    class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            var client = new UseFunctionData();
-            client.Exec();
-        }
+        Assembly.Load("DesignPattern").GetTypes()
+            .Where(t => t.IsClass && t.BaseType == typeof(AbstractRunner))
+            .ToList()
+            .ForEach(t =>
+            {
+                var instance = Activator.CreateInstance(t) as AbstractRunner;
+                instance?.Exec();
+            });
     }
 }

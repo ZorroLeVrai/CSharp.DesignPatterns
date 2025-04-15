@@ -1,63 +1,68 @@
-﻿namespace DesignPattern.Creational
+﻿using Xunit;
+
+namespace DesignPattern.Creational;
+
+/// <summary>
+/// Prototype lets you copy existing objects without making your code dependent on their classes.
+/// </summary>
+public interface IPrototype
 {
-    //Prototype lets you copy existing objects without making your code dependent on their classes.
+    IPrototype Clone();
+}
 
-    public interface IPrototype
+public class PrototypeAlpha : IPrototype
+{
+    public string FieldA { get; }
+
+    public PrototypeAlpha(ProtoProduct product)
     {
-        IPrototype Clone();
+        FieldA = product.FieldA;
     }
 
-    public class PrototypeAlpha : IPrototype
+    protected PrototypeAlpha(PrototypeAlpha other)
     {
-        public string FieldA { get; }
-
-        public PrototypeAlpha(ProtoProduct product)
-        {
-            FieldA = product.FieldA;
-        }
-
-        protected PrototypeAlpha(PrototypeAlpha other)
-        {
-            FieldA = other.FieldA;
-        }
-
-        public virtual IPrototype Clone()
-        {
-            return new PrototypeAlpha(this);
-        }
+        FieldA = other.FieldA;
     }
 
-    public class SubPrototypeAlpha : PrototypeAlpha
+    public virtual IPrototype Clone()
     {
-        public string FieldB { get; }
+        return new PrototypeAlpha(this);
+    }
+}
 
-        public SubPrototypeAlpha(ProtoProduct product)
-            :base(product)
-        {
-            FieldB = product.FieldB;
-        }
+public class SubPrototypeAlpha : PrototypeAlpha
+{
+    public string FieldB { get; }
 
-        private SubPrototypeAlpha(SubPrototypeAlpha other)
-            :base(other)
-        {
-            FieldB = other.FieldB;
-        }
-
-        public override IPrototype Clone()
-        {
-            return new SubPrototypeAlpha(this);
-        }
+    public SubPrototypeAlpha(ProtoProduct product)
+        :base(product)
+    {
+        FieldB = product.FieldB;
     }
 
-    public record ProtoProduct(string FieldA, string FieldB, string FieldC, string FieldD);
-
-    public class PrototypeClient
+    private SubPrototypeAlpha(SubPrototypeAlpha other)
+        :base(other)
     {
-        public void UsePrototype()
-        {
-            var product = new ProtoProduct("A", "B", "C", "D");
-            var prototype = new SubPrototypeAlpha(product);
-            var prototype2 = prototype.Clone();
-        }
+        FieldB = other.FieldB;
+    }
+
+    public override IPrototype Clone()
+    {
+        return new SubPrototypeAlpha(this);
+    }
+}
+
+public record ProtoProduct(string FieldA, string FieldB, string FieldC, string FieldD);
+
+public class PrototypeClient: AbstractRunner
+{
+    public override void Run()
+    {
+        var product = new ProtoProduct("A", "B", "C", "D");
+        var prototype = new SubPrototypeAlpha(product);
+        var prototype2 = prototype.Clone();
+        Assert.True(prototype2 is SubPrototypeAlpha);
+        Assert.Equal(((SubPrototypeAlpha)prototype2).FieldA, "A");
+        Assert.Equal(((SubPrototypeAlpha)prototype2).FieldB, "B");
     }
 }

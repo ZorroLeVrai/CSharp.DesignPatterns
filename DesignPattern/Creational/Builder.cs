@@ -1,109 +1,135 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using Xunit;
 
-namespace DesignPattern.Creational
+namespace DesignPattern.Creational;
+
+/// <summary>
+/// Builder lets you construct complex objects step by step.
+/// The pattern allows you to produce different types and representations of an object using the same construction code.
+/// </summary>
+public interface IBuilder
 {
-    //Builder lets you construct complex objects step by step.
-    //The pattern allows you to produce different types and representations of an object using the same construction code.
+    IBProduct Product { get; }
 
-    public interface IBuilder
+    void Init();
+    void BuildStepA();
+    void BuildStepB();
+    void BuildStepC();
+}
+
+public class BuilderAlpha : IBuilder
+{
+    public IBProduct Product { get; private set; }
+
+    public BuilderAlpha()
     {
-        IBProduct Product { get; }
-
-        void Reset();
-        void BuildStepA();
-        void BuildStepB();
-        void BuildStepC();
+        Product = new BProductAlpha();
     }
 
-    public class BuilderAlpha : IBuilder
+    public void BuildStepA()
     {
-        public IBProduct Product { get; private set; }
-
-        public void BuildStepA()
-        {
-            Console.WriteLine("Alpha Step A");
-        }
-
-        public void BuildStepB()
-        {
-            Console.WriteLine("Alpha Step B");
-        }
-
-        public void BuildStepC()
-        {
-            Console.WriteLine("Alpha Step C");
-        }
-
-        public void Reset()
-        {
-            Product = new BProductAlpha();
-        }
+        Product.AddStep("Alpha Step A");
     }
 
-    public class BuilderBeta : IBuilder
+    public void BuildStepB()
     {
-        public IBProduct Product { get; private set; }
-
-        public void BuildStepA()
-        {
-            Console.WriteLine("Beta Step A");
-        }
-
-        public void BuildStepB()
-        {
-            Console.WriteLine("Beta Step B");
-        }
-
-        public void BuildStepC()
-        {
-            Console.WriteLine("Beta Step C");
-        }
-
-        public void Reset()
-        {
-            Product = new BProductBeta();
-        }
+        Product.AddStep("Alpha Step B");
     }
 
-    public interface IBProduct
-    { }
-
-    public class BProductAlpha : IBProduct
-    { }
-
-    public class BProductBeta : IBProduct
-    { }
-
-    public class Director
+    public void BuildStepC()
     {
-        private readonly IBuilder _builder;
-
-        public Director(IBuilder builder)
-            => _builder = builder;
-
-        public IBProduct BuildProduct(bool isAlpha)
-        {
-            _builder.Reset();
-            if (isAlpha)
-            {
-                _builder.BuildStepA();
-            }
-            else
-            {
-                _builder.BuildStepB();
-                _builder.BuildStepC();
-            }
-
-            return _builder.Product;
-        }
+        Product.AddStep("Alpha Step C");
     }
 
-    public class BuilderClient
+    public void Init()
     {
-        public void UseBuilder()
-        {
-            var director = new Director(new BuilderBeta());
-            var product = director.BuildProduct(true);
-        }
+        Product = new BProductAlpha();
+    }
+}
+
+public class BuilderBeta : IBuilder
+{
+    public IBProduct Product { get; private set; }
+
+    public void BuildStepA()
+    {
+        Product.AddStep("Beta Step A");
+    }
+
+    public void BuildStepB()
+    {
+        Product.AddStep("Beta Step B");
+    }
+
+    public void BuildStepC()
+    {
+        Product.AddStep("Beta Step C");
+    }
+
+    public void Init()
+    {
+        Product = new BProductBeta();
+    }
+}
+
+public interface IBProduct
+{
+    IReadOnlyList<string> Steps { get; }
+
+    void AddStep(string step);
+}
+
+public class BProductAlpha : IBProduct
+{
+    private readonly List<string> _steps = new();
+
+    public IReadOnlyList<string> Steps => _steps;
+
+    public void AddStep(string step)
+    {
+        _steps.Add(step);
+    }
+}
+
+public class BProductBeta : IBProduct
+{
+    private readonly List<string> _steps = new();
+
+    public IReadOnlyList<string> Steps => _steps;
+
+    public void AddStep(string step)
+    {
+        _steps.Add(step);
+    }
+}
+
+public class Director
+{
+    private readonly IBuilder _builder;
+
+    public Director(IBuilder builder)
+        => _builder = builder;
+
+    public IBProduct BuildProduct()
+    {
+        _builder.Init();
+        _builder.BuildStepA();
+        _builder.BuildStepB();
+        _builder.BuildStepC();
+
+        return _builder.Product;
+    }
+}
+
+public class BuilderClient : AbstractRunner
+{
+    public override void Run()
+    {
+        var director = new Director(new BuilderBeta());
+        var product = director.BuildProduct();
+        Assert.Equal(product.Steps.Count, 3);
+        Assert.Equal(product.Steps[0], "Beta Step A");
+        Assert.Equal(product.Steps[1], "Beta Step B");
+        Assert.Equal(product.Steps[2], "Beta Step C");
     }
 }

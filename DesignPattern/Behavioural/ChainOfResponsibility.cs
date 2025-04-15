@@ -1,92 +1,96 @@
-﻿using System;
+﻿using Xunit;
 
-namespace DesignPattern.Behavioural
+namespace DesignPattern.Behavioural;
+
+/// <summary>
+/// Chain of Responsibility lets you pass requests along a chain of handlers.
+/// Upon receiving a request, each handler decides either to process the request or to pass it to the next handler in the chain.
+/// </summary>
+public interface IHandler
 {
-    //Chain of Responsibility lets you pass requests along a chain of handlers.
-    //Upon receiving a request, each handler decides either to process the request or to pass it to the next handler in the chain.
+    void SetNext(IHandler handler);
+    string Handle(Request request);
+}
 
-    public interface IHandler
+public class NullHandler : IHandler
+{
+    public string Handle(Request request) => string.Empty; // No operation, no next handler to call.
+
+    public void SetNext(IHandler handler)
+    {}
+}
+
+public class BasicHandler : IHandler
+{
+    private IHandler next = new NullHandler();
+
+    public virtual string Handle(Request request)
     {
-        void SetNext(IHandler handler);
-        void Handle(Request request);
+        return next.Handle(request);
     }
 
-    public class NullHandler : IHandler
+    public void SetNext(IHandler handler)
     {
-        public void Handle(Request request)
-        {}
-
-        public void SetNext(IHandler handler)
-        {}
+        next = handler;
     }
+}
 
-    public class BasicHandler : IHandler
+public class OddHandler : BasicHandler
+{
+    public override string Handle(Request request)
     {
-        private IHandler next = new NullHandler();
-
-        public virtual void Handle(Request request)
+        if (CanHandle(request))
         {
-            next.Handle(request);
+            // Handle odd number by dividing it by 2 and adding 1
+            return $"{request.Number} - Odd Handler";
         }
-
-        public void SetNext(IHandler handler)
+        else
         {
-            next = handler;
-        }
-    }
-
-    public class OddHandler : BasicHandler
-    {
-        public override void Handle(Request request)
-        {
-            if (CanHandle(request))
-            {
-                Console.WriteLine($"{request.Number / 2} + 1");
-            }
-            else
-            {
-                base.Handle(request);
-            }
-        }
-
-        private bool CanHandle(Request request)
-        {
-            return 1 == request.Number % 2;
+            return base.Handle(request);
         }
     }
 
-    public class EvenHandler : BasicHandler
+    private bool CanHandle(Request request)
     {
-        public override void Handle(Request request)
-        {
-            if (CanHandle(request))
-            {
-                Console.WriteLine($"{request.Number / 2}");
-            }
-            else
-            {
-                base.Handle(request);
-            }
-        }
+        return 1 == request.Number % 2;
+    }
+}
 
-        private bool CanHandle(Request request)
+public class EvenHandler : BasicHandler
+{
+    public override string Handle(Request request)
+    {
+        if (CanHandle(request))
         {
-            return 0 == request.Number % 2;
+            // Handle even number by dividing it by 2
+            return $"{request.Number} - Even Handler";
+        }
+        else
+        {
+            return base.Handle(request);
         }
     }
 
-
-    public record Request(int Number);
-
-    public class ChainOfResponsibilityClient
+    private bool CanHandle(Request request)
     {
-        public void UseChainResponsability()
-        {
-            var handler = new OddHandler();
-            handler.SetNext(new EvenHandler());
+        return 0 == request.Number % 2;
+    }
+}
 
-            handler.Handle(new Request(7));
-            handler.Handle(new Request(6));
-        }
+
+public record Request(int Number);
+
+public class ChainOfResponsibilityClient : AbstractRunner
+{
+    public override void Run()
+    {
+        var handler = new OddHandler();
+        handler.SetNext(new EvenHandler());
+
+        var result1 = handler.Handle(new Request(7));
+        Assert.Equal("7 - Odd Handler", result1);
+
+        var result2 = handler.Handle(new Request(6));
+        Assert.Equal("6 - Even Handler", result2);
     }
 }
